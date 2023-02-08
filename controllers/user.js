@@ -79,7 +79,6 @@ export const register = tryCatch(async (req, res) => {
     result: { id, fName, lName, email: user.email, photoURL, token },
   });
 });
-
 export const login = tryCatch(async (req, res) => {
   const { email, password } = req.body;
 
