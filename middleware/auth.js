@@ -15,7 +15,7 @@ const auth= async(req,res,next)=>{
             })
             console.log(ticket);
             const payload = ticket.getPayload()
-            req.user={id:payload.sub,fName:payload.name,photoURL:payload.picture}
+            req.user={id:payload.sub,fName:payload.name.split(" ")[0],lName:payload.name.split(" ")[1],photoURL:payload.picture}
         }
         else{
            const decodedToken= jwt.verify(token,process.env.JWT_SECRET)
