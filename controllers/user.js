@@ -2,6 +2,7 @@ import bcrypt from "bcryptjs";
 import User from "../models/User.js";
 import jwt from "jsonwebtoken";
 import tryCatch from "./utlis/tryCatch.js";
+import Room from "../models/Room.js";
 
 //register function
 export const register = tryCatch(async (req, res) => {
@@ -123,6 +124,12 @@ export const updateProfile = tryCatch(async (req, res) => {
     new: true,
   });
   const { _id: id, fName, lName, photoURL } = updatedUser;
+  //to also update room details when user updates his profile
+  await Room.updateMany(
+    { uid: id },
+    { ufname: fName, uLname: lName, uPhoto: photoURL }
+  );
+
   const token = jwt.sign(
     { id, fName, lName, photoURL },
     process.env.JWT_SECRET,
