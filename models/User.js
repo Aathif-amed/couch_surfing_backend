@@ -6,29 +6,40 @@ const userSchema = mongoose.Schema(
       type: String,
       min: 2,
       max: 50,
-      required:true,
+      required: true,
     },
     lName: {
       type: String,
       min: 2,
       max: 50,
-      default: "",  
+      default: "",
     },
     email: {
       type: String,
       min: 2,
       max: 50,
-      required:true,
+      required: true,
       unique: true,
+      trim: true,
     },
     password: {
       type: String,
       min: 6,
-      required:true,
+      required: true,
     },
     photoURL: {
       type: String,
       default: "",
+    },
+    role: {
+      type: String,
+      default: "basic",
+      //to specify which values are allowed
+      enum: ["basic", "editor", "admin"],
+    },
+    active: {
+      type: Boolean,
+      default: true,
     },
   },
   {
