@@ -175,3 +175,7 @@ export const updateStatus = tryCatch(async (req, res) => {
   await User.findByIdAndUpdate(req.params.userId, { role, active });
   res.status(200).json({ success: true, result: { _id: req.params.userId } });
 });
+export const deleteUser = tryCatch(async (req, res) => {
+  const { _id } = await User.findByIdAndDelete(req.params.userId);
+  res.status(200).json({ success: true, result: { _id } });
+});
