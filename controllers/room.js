@@ -12,7 +12,7 @@ export const getRooms = tryCatch(async (req, res) => {
   res.status(200).json({ success: true, result: rooms });
 });
 export const updateRoom = tryCatch(async (req, res) => {
-  const updatedRoom = await User.findByIdAndUpdate(
+  const updatedRoom = await Room.findByIdAndUpdate(
     req.params.roomId,
     req.body,
     {
