@@ -65,7 +65,7 @@ export const register = tryCatch(async (req, res) => {
     password: hashedPassword,
   });
 
-  const { _id: id, photoURL } = user;
+  const { _id: id, photoURL, role, active } = user;
   //creating jwt token for authentication purpose
   const token = jwt.sign(
     { id, fName, lName, photoURL },
@@ -77,7 +77,16 @@ export const register = tryCatch(async (req, res) => {
   //returning data to user if checks are passed
   return res.status(200).json({
     success: true,
-    result: { id, fName, lName, email: user.email, photoURL, token },
+    result: {
+      id,
+      fName,
+      lName,
+      email: user.email,
+      photoURL,
+      token,
+      role,
+      active,
+    },
   });
 });
 export const login = tryCatch(async (req, res) => {
@@ -91,7 +100,7 @@ export const login = tryCatch(async (req, res) => {
   if (!existingUser) {
     return res.status(400).json({
       success: false,
-      message: "Invalid Username or ..!",
+      message: "Invalid Username or Password..!",
     });
   }
 
@@ -105,7 +114,13 @@ export const login = tryCatch(async (req, res) => {
     });
   }
 
-  const { _id: id, fName, lName, photoURL } = existingUser;
+  const { _id: id, fName, lName, photoURL, role, active } = existingUser;
+  if (!active) {
+    return res.status(401).json({
+      success: false,
+      message: "Sorry,This account has been suspended...! Contact Admin.",
+    });
+  }
 
   const token = jwt.sign(
     { id, fName, lName, photoURL },
@@ -116,7 +131,16 @@ export const login = tryCatch(async (req, res) => {
   );
   return res.status(200).json({
     success: true,
-    result: { id, fName, lName, email: emailLowerCase, photoURL, token },
+    result: {
+      id,
+      fName,
+      lName,
+      email: emailLowerCase,
+      photoURL,
+      token,
+      role,
+      active,
+    },
   });
 });
 export const updateProfile = tryCatch(async (req, res) => {
@@ -145,4 +169,9 @@ export const updateProfile = tryCatch(async (req, res) => {
 export const getUsers = tryCatch(async (req, res) => {
   const users = await User.find().sort({ _id: -1 });
   res.status(200).json({ success: true, result: users });
+});
+export const updateStatus = tryCatch(async (req, res) => {
+  const { role, active } = req.body;
+  await User.findByIdAndUpdate(req.params.userId, { role, active });
+  res.status(200).json({ success: true, result: { _id: req.params.userId } });
 });
