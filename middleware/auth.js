@@ -13,7 +13,6 @@ const auth = async (req, res, next) => {
         idToken: token,
         audience: process.env.GOOGLE_CLIENT_ID,
       });
-      console.log(ticket);
       const payload = ticket.getPayload();
       req.user = {
         id: payload.sub,
