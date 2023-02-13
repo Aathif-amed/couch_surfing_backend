@@ -23,6 +23,11 @@ userRoute.patch(
   checkAccess(userAccess.updateStatus),
   updateStatus
 );
-userRoute.delete("/:userId", deleteUser);
+userRoute.delete(
+  "/:userId",
+  auth,
+  checkAccess(userAccess.updateStatus),
+  deleteUser
+);
 
 export default userRoute;
