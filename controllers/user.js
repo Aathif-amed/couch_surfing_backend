@@ -68,14 +68,14 @@ export const register = tryCatch(async (req, res) => {
   const { _id: id, photoURL, role, active } = user;
   //creating jwt token for authentication purpose
   const token = jwt.sign(
-    { id, fName, lName, photoURL },
+    { id, fName, lName, photoURL, role },
     process.env.JWT_SECRET,
     {
       expiresIn: "1h",
     }
   );
   //returning data to user if checks are passed
-  return res.status(200).json({
+  return res.status(201).json({
     success: true,
     result: {
       id,
@@ -123,7 +123,7 @@ export const login = tryCatch(async (req, res) => {
   }
 
   const token = jwt.sign(
-    { id, fName, lName, photoURL },
+    { id, fName, lName, photoURL, role },
     process.env.JWT_SECRET,
     {
       expiresIn: "1h",
@@ -144,10 +144,20 @@ export const login = tryCatch(async (req, res) => {
   });
 });
 export const updateProfile = tryCatch(async (req, res) => {
-  const updatedUser = await User.findByIdAndUpdate(req.user.id, req.body, {
+  //the below line(149) is to extract photo and name of the user and not any other fields
+  //this is to prevent user from changing his role to admin via sending role feild in his request
+  const fields = req.body?.photoURL
+    ? {
+        fName: req.body.fName,
+        lName: req.body.lName,
+        photoURL: req.body.photoURL,
+      }
+    : { fName: req.body.fName, lName: req.body.lName };
+
+  const updatedUser = await User.findByIdAndUpdate(req.user.id, fields, {
     new: true,
   });
-  const { _id: id, fName, lName, photoURL } = updatedUser;
+  const { _id: id, fName, lName, photoURL, role } = updatedUser;
   //to also update room details when user updates his profile
   await Room.updateMany(
     { uid: id },
@@ -155,7 +165,7 @@ export const updateProfile = tryCatch(async (req, res) => {
   );
 
   const token = jwt.sign(
-    { id, fName, lName, photoURL },
+    { id, fName, lName, photoURL, role },
     process.env.JWT_SECRET,
     {
       expiresIn: "1h",
