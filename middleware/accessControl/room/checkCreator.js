@@ -1,4 +1,4 @@
-import Room from "../../../models/Room";
+import Room from "../../../models/Room.js";
 
 const checkCreator = async (req) => {
   try {

@@ -6,7 +6,7 @@ const checkAccess = (permission) => {
     if (!permission?.creator) {
       return res
         .status(401)
-        .json({ success: false, messge: "Access Denied..!" });
+        .json({ success: false, message: "Access Denied..!" });
     }
     const isCreator = await permission.creator(req);
     if (isCreator === true) {
@@ -15,11 +15,11 @@ const checkAccess = (permission) => {
     if (isCreator === false) {
       return res
         .status(401)
-        .json({ success: false, messge: "Access Denied..!" });
+        .json({ success: false, message: "Access Denied..!" });
     }
     return res
       .status(500)
-      .json({ success: false, messge: "Something Went Wrong..!" });
+      .json({ success: false, message: "Something Went Wrong..!" });
   };
 };
 export default checkAccess;
